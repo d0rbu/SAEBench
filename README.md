@@ -15,7 +15,7 @@
 SAE Bench is a comprehensive suite of 8 evaluations for Sparse Autoencoder (SAE) models:
 
 - **[Feature Absorption](https://arxiv.org/abs/2409.14507)**
-- **[AutoInterp](https://blog.eleuther.ai/autointerp/)**
+- **[AutoInterp](https://arxiv.org/abs/2410.13928)**
 - **L0 / Loss Recovered**
 - **[RAVEL](https://arxiv.org/abs/2402.17700)**
 - **[Spurious Correlation Removal (SCR)](https://arxiv.org/abs/2411.18895)**
