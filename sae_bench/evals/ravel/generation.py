@@ -76,7 +76,7 @@ def generate_batched(
             attention_mask=attention_mask,
             max_new_tokens=max_new_tokens,
             do_sample=False,  # greedy decoding for reproducibility
-        )
+        )  # type: ignore
         generated_ids = output_ids[:, -max_new_tokens:]
         generations.append(generated_ids)
 
