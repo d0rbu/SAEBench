@@ -2,6 +2,29 @@
 
 
 
+## v0.4.2 (2025-07-15)
+
+### Fix
+
+* fix: pinning saelens to v5.x.x ([`14bedb5`](https://github.com/adamkarvonen/SAEBench/commit/14bedb5e677ff3edd2df48eda7a9ddaf1b4a5b5d))
+
+### Unknown
+
+* Merge pull request #75 from chanind/pin-saelens
+
+fix: pinning saelens to v5.x.x ([`d7e3b15`](https://github.com/adamkarvonen/SAEBench/commit/d7e3b1553142a146754ef433cf7793fc18d1648f))
+
+* fixing typing ([`7d370e2`](https://github.com/adamkarvonen/SAEBench/commit/7d370e281287a8fb0496a905058256d2405990f1))
+
+* Merge pull request #74 from SrGonao/patch-1
+
+Change autointerp reference from the old blogpost to the new article. ([`1a6641b`](https://github.com/adamkarvonen/SAEBench/commit/1a6641ba62207a352f3103bac679c6e202702002))
+
+* Update README.md
+
+Change autointerp reference from the old blogpost to the new article. ([`7247b1c`](https://github.com/adamkarvonen/SAEBench/commit/7247b1cd2efd818f77044dd596d89262e2dbf226))
+
+
 ## v0.4.1 (2025-04-11)
 
 ### Chore
