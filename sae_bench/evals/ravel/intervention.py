@@ -120,7 +120,7 @@ def generate_batched_interventions(
             ),
             max_new_tokens=max_new_tokens,
             do_sample=False,  # greedy decoding for reproducibility
-        )
+        )  # type: ignore
 
         handle.remove()
         generated_ids = output_ids[:, -max_new_tokens:]
