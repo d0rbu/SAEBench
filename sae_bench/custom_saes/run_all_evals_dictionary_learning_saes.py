@@ -131,6 +131,7 @@ def verify_saes_load(
     model_name: str,
     device: str,
     dtype: torch.dtype,
+    download_location: str = "downloaded_saes",
 ):
     """Verify that all SAEs load correctly. Useful to check this before a big evaluation run."""
     for sae_location in sae_locations:
@@ -141,6 +142,7 @@ def verify_saes_load(
             model_name=model_name,
             device=device,
             dtype=dtype,
+            download_location=download_location,
         )
         del sae
 
@@ -154,6 +156,7 @@ def run_evals(
     device: str,
     eval_types: list[str],
     random_seed: int,
+    download_location: str = "downloaded_saes",
     api_key: str | None = None,
     force_rerun: bool = False,
 ):
@@ -305,6 +308,7 @@ def run_evals(
         model_name,
         device,
         general_utils.str_to_dtype(llm_dtype),
+        download_location,
     )
 
     # Run selected evaluations
@@ -336,6 +340,7 @@ def run_evals(
                     model_name=model_name,
                     device=device,
                     dtype=general_utils.str_to_dtype(llm_dtype),
+                    download_location=download_location,
                 )
                 unique_sae_id = sae_location.replace("/", "_")
                 unique_sae_id = f"{repo_id.split('/')[1]}_{unique_sae_id}"
