@@ -24,26 +24,18 @@ MODEL_CONFIGS = {
     "pythia-70m-deduped": {
         "batch_size": 512,
         "dtype": "float32",
-        "layers": [3, 4],
-        "d_model": 512,
     },
     "pythia-160m-deduped": {
         "batch_size": 256,
         "dtype": "float32",
-        "layers": [8],
-        "d_model": 768,
     },
     "gemma-2-2b": {
         "batch_size": 32,
         "dtype": "bfloat16",
-        "layers": [5, 12, 19],
-        "d_model": 2304,
     },
     "olmoe-i": {
         "batch_size": 8,
         "dtype": "bfloat16",
-        "layers": [12],
-        "d_model": 2048,
     },
 }
 
@@ -290,7 +282,7 @@ def run_evals(
         "unlearning": (
             lambda selected_saes, is_final: unlearning.run_eval(
                 unlearning.UnlearningEvalConfig(
-                    model_name="gemma-2-2b-it",
+                    model_name=model_name,
                     random_seed=random_seed,
                     llm_dtype=llm_dtype,
                     llm_batch_size=llm_batch_size
