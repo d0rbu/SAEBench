@@ -39,6 +39,12 @@ MODEL_CONFIGS = {
         "layers": [5, 12, 19],
         "d_model": 2304,
     },
+    "olmoe-i": {
+        "batch_size": 8,
+        "dtype": "bfloat16",
+        "layers": [12],
+        "d_model": 2048,
+    },
 }
 
 output_folders = {
