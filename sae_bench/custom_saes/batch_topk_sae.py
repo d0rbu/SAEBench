@@ -1,5 +1,6 @@
 import json
 import os
+import warnings
 
 import torch
 import torch.nn as nn
@@ -97,7 +98,10 @@ def load_dictionary_learning_batch_topk_sae(
         layer = config["trainer"]["layer"]
 
     # Transformer lens often uses a shortened model name
-    assert model_name in config["trainer"]["lm_name"]
+    if model_name not in config["trainer"]["lm_name"]:
+        warnings.warn(
+            f"Model name {model_name} not in config['trainer']['lm_name'] {config['trainer']['lm_name']}"
+        )
 
     k = config["trainer"]["k"]
 
@@ -181,7 +185,10 @@ def load_dictionary_learning_matryoshka_batch_topk_sae(
         layer = config["trainer"]["layer"]
 
     # Transformer lens often uses a shortened model name
-    assert model_name in config["trainer"]["lm_name"]
+    if model_name not in config["trainer"]["lm_name"]:
+        warnings.warn(
+            f"Model name {model_name} not in config['trainer']['lm_name'] {config['trainer']['lm_name']}"
+        )
 
     k = config["trainer"]["k"]
 
