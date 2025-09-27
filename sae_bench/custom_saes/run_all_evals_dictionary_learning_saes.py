@@ -119,6 +119,7 @@ def load_dictionary_learning_sae(
         model_name=model_name,
         device=device,
         dtype=dtype,
+        local_dir=download_location,
     )
     return sae
 
