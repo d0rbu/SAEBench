@@ -343,7 +343,11 @@ def run_evals(
                     download_location=download_location,
                 )
                 unique_sae_id = sae_location.replace("/", "_")
-                unique_sae_id = f"{repo_id.split('/')[1]}_{unique_sae_id}"
+                repo_id_parts = repo_id.split("/")
+                if len(repo_id_parts) > 1:
+                    unique_sae_id = f"{repo_id_parts[1]}_{unique_sae_id}"
+                else:
+                    unique_sae_id = f"{repo_id_parts[0]}_{unique_sae_id}"
                 selected_saes = [(unique_sae_id, sae)]
 
                 os.makedirs(output_folders[eval_type], exist_ok=True)
@@ -351,8 +355,7 @@ def run_evals(
 
                 del sae
 
-        except Exception as e:
-            print(f"Error running {eval_type} evaluation: {e}")
+        except Exception:
             print(traceback.format_exc())
             continue
 
