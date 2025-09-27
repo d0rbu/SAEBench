@@ -81,12 +81,12 @@ def load_dictionary_learning_batch_topk_sae(
 ) -> BatchTopKSAE:
     assert "ae.pt" in filename
 
-    path_to_params = os.path.join(local_dir, repo_id, filename)
+    path_to_params = os.path.join(local_dir, filename)
 
     pt_params = torch.load(path_to_params, map_location=torch.device("cpu"))
 
     config_filename = filename.replace("ae.pt", "config.json")
-    path_to_config = os.path.join(local_dir, repo_id, config_filename)
+    path_to_config = os.path.join(local_dir, config_filename)
 
     with open(path_to_config) as f:
         config = json.load(f)
@@ -165,12 +165,12 @@ def load_dictionary_learning_matryoshka_batch_topk_sae(
 ) -> BatchTopKSAE:
     assert "ae.pt" in filename
 
-    path_to_params = os.path.join(local_dir, repo_id, filename)
+    path_to_params = os.path.join(local_dir, filename)
 
     pt_params = torch.load(path_to_params, map_location=torch.device("cpu"))
 
     config_filename = filename.replace("ae.pt", "config.json")
-    path_to_config = os.path.join(local_dir, repo_id, config_filename)
+    path_to_config = os.path.join(local_dir, config_filename)
 
     with open(path_to_config) as f:
         config = json.load(f)
