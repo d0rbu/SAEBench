@@ -13,7 +13,7 @@ from dataclasses import asdict
 import pandas as pd
 import torch
 from sae_lens import SAE
-from sae_lens.toolkit.pretrained_saes_directory import get_pretrained_saes_directory
+from sae_lens.loading.pretrained_saes_directory import get_pretrained_saes_directory
 from tqdm import tqdm
 from transformer_lens import HookedTransformer
 

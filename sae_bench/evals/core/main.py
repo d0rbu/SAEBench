@@ -18,8 +18,8 @@ from typing import Any
 
 import einops
 import torch
-from sae_lens.sae import SAE
-from sae_lens.toolkit.pretrained_saes_directory import get_pretrained_saes_directory
+from sae_lens import SAE
+from sae_lens.loading.pretrained_saes_directory import get_pretrained_saes_directory
 from sae_lens.training.activations_store import ActivationsStore
 from tqdm import tqdm
 from transformer_lens import HookedTransformer

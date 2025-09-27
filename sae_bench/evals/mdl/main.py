@@ -15,7 +15,7 @@ from collectibles import ListCollection
 from einops import rearrange
 from loguru import logger
 from sae_lens import SAE, ActivationsStore
-from sae_lens.sae import TopK
+from sae_lens.saes.topk_sae import TopK
 from torch import nn
 from tqdm import tqdm
 from transformer_lens import HookedTransformer

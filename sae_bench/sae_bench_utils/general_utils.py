@@ -8,7 +8,7 @@ from typing import Any, Callable
 import pandas as pd
 import torch
 from sae_lens import SAE
-from sae_lens.toolkit.pretrained_saes_directory import get_pretrained_saes_directory
+from sae_lens.loading.pretrained_saes_directory import get_pretrained_saes_directory
 
 
 def str_to_dtype(dtype_str: str) -> torch.dtype:
