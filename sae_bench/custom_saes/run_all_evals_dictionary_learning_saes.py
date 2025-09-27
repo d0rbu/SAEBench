@@ -1,5 +1,6 @@
 import json
 import os
+import traceback
 
 import torch
 from huggingface_hub import snapshot_download
@@ -352,6 +353,7 @@ def run_evals(
 
         except Exception as e:
             print(f"Error running {eval_type} evaluation: {e}")
+            print(traceback.format_exc())
             continue
 
 
