@@ -1,8 +1,8 @@
 import json
+import os
 
 import torch
 import torch.nn as nn
-from huggingface_hub import hf_hub_download
 
 import sae_bench.custom_saes.base_sae as base_sae
 
@@ -81,22 +81,12 @@ def load_dictionary_learning_batch_topk_sae(
 ) -> BatchTopKSAE:
     assert "ae.pt" in filename
 
-    path_to_params = hf_hub_download(
-        repo_id=repo_id,
-        filename=filename,
-        force_download=False,
-        local_dir=local_dir,
-    )
+    path_to_params = os.path.join(local_dir, repo_id, filename)
 
     pt_params = torch.load(path_to_params, map_location=torch.device("cpu"))
 
     config_filename = filename.replace("ae.pt", "config.json")
-    path_to_config = hf_hub_download(
-        repo_id=repo_id,
-        filename=config_filename,
-        force_download=False,
-        local_dir=local_dir,
-    )
+    path_to_config = os.path.join(local_dir, repo_id, config_filename)
 
     with open(path_to_config) as f:
         config = json.load(f)
@@ -175,22 +165,12 @@ def load_dictionary_learning_matryoshka_batch_topk_sae(
 ) -> BatchTopKSAE:
     assert "ae.pt" in filename
 
-    path_to_params = hf_hub_download(
-        repo_id=repo_id,
-        filename=filename,
-        force_download=False,
-        local_dir=local_dir,
-    )
+    path_to_params = os.path.join(local_dir, repo_id, filename)
 
     pt_params = torch.load(path_to_params, map_location=torch.device("cpu"))
 
     config_filename = filename.replace("ae.pt", "config.json")
-    path_to_config = hf_hub_download(
-        repo_id=repo_id,
-        filename=config_filename,
-        force_download=False,
-        local_dir=local_dir,
-    )
+    path_to_config = os.path.join(local_dir, repo_id, config_filename)
 
     with open(path_to_config) as f:
         config = json.load(f)
