@@ -34,7 +34,7 @@ MODEL_CONFIGS = {
         "batch_size": 32,
         "dtype": "bfloat16",
     },
-    "OLMoE-1B-7B-0125-Instruct": {
+    "olmoe-i": {  # OLMoE-1B-7B-0125-Instruct
         "batch_size": 32,
         "dtype": "bfloat16",
     },
