@@ -38,9 +38,7 @@ from sae_bench.sae_bench_utils.indexing_utils import (
     get_k_largest_indices,
     index_with_buffer,
 )
-from sae_bench.sae_bench_utils.sae_selection_utils import (
-    get_saes_from_regex,
-)
+from sae_bench.sae_bench_utils.sae_selection_utils import get_saes_from_regex
 
 Messages: TypeAlias = list[dict[Literal["role", "content"], str]]
 
@@ -319,7 +317,7 @@ class AutoInterp:
         client = OpenAI(api_key=self.api_key)
 
         result = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-5-nano",
             messages=messages,  # type: ignore
             n=n_completions,
             max_tokens=max_tokens,
