@@ -320,7 +320,7 @@ class AutoInterp:
             model="gpt-5-nano",
             messages=messages,  # type: ignore
             n=n_completions,
-            max_tokens=max_tokens,
+            max_completion_tokens=max_tokens,
             stream=False,
         )
         response = [choice.message.content.strip() for choice in result.choices]

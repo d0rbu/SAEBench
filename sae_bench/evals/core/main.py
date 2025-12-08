@@ -8,6 +8,7 @@ import math
 import os
 import subprocess
 import time
+import traceback
 from collections import defaultdict
 from collections.abc import Mapping
 from dataclasses import asdict, dataclass, field
@@ -1165,11 +1166,12 @@ def multiple_evals(
                 print(f"Saved evaluation results to: {saved_path}")
 
             eval_results.append(eval_metrics)
-        except Exception as e:
+        except Exception:
             logger.error(
                 f"Failed to evaluate SAE {sae_id} from {sae_release} "
-                f"with context length {context_size} on dataset {dataset}: {str(e)}"
+                f"with context length {context_size} on dataset {dataset}"
             )
+            traceback.print_exc()
             continue  # Skip this combination and continue with the next one
 
         gc.collect()
