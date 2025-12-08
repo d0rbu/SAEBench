@@ -43,6 +43,15 @@ class BaseSAE(nn.Module, ABC):
             hook_name=hook_name,
             hook_layer=hook_layer,
         )
+
+        self.cfg.metadata = {
+            "context_size": self.cfg.context_size,
+            "hook_name": hook_name,
+            "hook_head_index": self.cfg.hook_head_index,
+            "seqpos_slice": self.cfg.seqpos_slice,
+            "prepend_bos": self.cfg.prepend_bos,
+        }
+
         self.cfg.dtype = self.dtype.__str__().split(".")[1]
         self.to(dtype=self.dtype, device=self.device)
 
