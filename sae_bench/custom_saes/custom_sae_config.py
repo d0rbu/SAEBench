@@ -1,5 +1,6 @@
-from dataclasses import dataclass, field
-from typing import Any
+from dataclasses import dataclass
+
+from sae_bench.custom_saes.base_sae import Metadata
 
 
 @dataclass
@@ -14,7 +15,7 @@ class CustomSAEConfig:
     # the values aren't important, the fields are just required
     context_size: int = None  # type: ignore # Can be used for auto-interp
     hook_head_index: int | None = None
-    metadata: dict[str, Any] = field(default_factory=dict)
+    metadata: Metadata | None = None
 
     # Architecture settings
     architecture: str = ""

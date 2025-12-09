@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
 import einops
 import torch
@@ -6,6 +7,15 @@ import torch.nn as nn
 from transformer_lens import HookedTransformer
 
 import sae_bench.custom_saes.custom_sae_config as sae_config
+
+
+@dataclass(frozen=True)
+class Metadata:
+    context_size: int
+    hook_name: str
+    hook_head_index: int | None
+    seqpos_slice: tuple
+    prepend_bos: bool
 
 
 class BaseSAE(nn.Module, ABC):
@@ -44,13 +54,13 @@ class BaseSAE(nn.Module, ABC):
             hook_layer=hook_layer,
         )
 
-        self.cfg.metadata = {
-            "context_size": self.cfg.context_size,
-            "hook_name": hook_name,
-            "hook_head_index": self.cfg.hook_head_index,
-            "seqpos_slice": self.cfg.seqpos_slice,
-            "prepend_bos": self.cfg.prepend_bos,
-        }
+        self.cfg.metadata = Metadata(
+            context_size=self.cfg.context_size,
+            hook_name=hook_name,
+            hook_head_index=self.cfg.hook_head_index,
+            seqpos_slice=self.cfg.seqpos_slice,
+            prepend_bos=self.cfg.prepend_bos,
+        )
 
         self.cfg.dtype = self.dtype.__str__().split(".")[1]
         self.to(dtype=self.dtype, device=self.device)
