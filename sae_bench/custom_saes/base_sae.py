@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 
 import einops
 import torch
@@ -7,15 +6,7 @@ import torch.nn as nn
 from transformer_lens import HookedTransformer
 
 import sae_bench.custom_saes.custom_sae_config as sae_config
-
-
-@dataclass(frozen=True)
-class Metadata:
-    context_size: int
-    hook_name: str
-    hook_head_index: int | None
-    seqpos_slice: tuple
-    prepend_bos: bool
+from sae_bench.custom_saes.custom_sae_config import Metadata
 
 
 class BaseSAE(nn.Module, ABC):

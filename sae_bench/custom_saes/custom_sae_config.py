@@ -1,6 +1,13 @@
 from dataclasses import dataclass
 
-from sae_bench.custom_saes.base_sae import Metadata
+
+@dataclass(frozen=True)
+class Metadata:
+    context_size: int
+    hook_name: str
+    hook_head_index: int | None
+    seqpos_slice: tuple
+    prepend_bos: bool
 
 
 @dataclass
