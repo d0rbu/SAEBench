@@ -159,6 +159,7 @@ def run_evals(
     download_location: str = "downloaded_saes",
     api_key: str | None = None,
     force_rerun: bool = False,
+    num_autointerp_latents: int = 1000,
 ):
     """Run selected evaluations for the given model and SAEs."""
 
@@ -188,6 +189,7 @@ def run_evals(
                     random_seed=random_seed,
                     llm_batch_size=llm_batch_size,
                     llm_dtype=llm_dtype,
+                    n_latents=num_autointerp_latents,
                 ),
                 selected_saes,
                 device,
