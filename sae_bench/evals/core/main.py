@@ -1041,10 +1041,7 @@ def multiple_evals(
     for sae_release, sae_object_or_id in tqdm(
         selected_saes, desc="Running SAE evaluation on all selected SAEs"
     ):
-        sae_id, sae, sparsity = general_utils.load_and_format_sae(
-            sae_release, sae_object_or_id, device
-        )  # type: ignore
-        sae = sae.to(device=device, dtype=llm_dtype)
+        sae_id = general_utils.get_sae_id(sae_release)
 
         sae_result_path = general_utils.get_results_filepath(
             output_folder, sae_release, sae_id
@@ -1053,6 +1050,12 @@ def multiple_evals(
         if os.path.exists(sae_result_path) and not force_rerun:
             print(f"Skipping {sae_release}_{sae_id} as results already exist")
             continue
+
+        loaded_sae_id, sae, sparsity = general_utils.load_and_format_sae(
+            sae_release, sae_object_or_id, device
+        )  # type: ignore
+        assert loaded_sae_id == sae_id, f"Loaded SAE ID {loaded_sae_id} does not match expected SAE ID {sae_id}"
+        sae = sae.to(device=device, dtype=llm_dtype)
 
         if current_model_str != sae.cfg.model_name:
             # Wrap model loading with retry
@@ -1115,6 +1118,7 @@ def multiple_evals(
                     sae,
                     context_size=context_size,
                     dataset=dataset,
+                    dataset_trust_remote_code=True,
                 )
 
             activation_store = create_activation_store()

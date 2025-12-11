@@ -327,7 +327,7 @@ def run_eval_single_sae(
     model = model.to(device)  # type: ignore
 
     activations_store = ActivationsStore.from_sae(
-        model, sae, config.sae_batch_size, dataset=dataset_name, device=device
+        model, sae, config.sae_batch_size, dataset=dataset_name, device=device, dataset_trust_remote_code=True
     )
 
     num_features = sae.cfg.d_sae
