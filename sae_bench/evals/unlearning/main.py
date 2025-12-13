@@ -146,11 +146,7 @@ def run_eval(
     random.seed(config.random_seed)
     torch.manual_seed(config.random_seed)
 
-    model = HookedTransformer.from_pretrained_no_processing(
-        config.model_name,
-        device=device,
-        dtype=config.llm_dtype,  # type: ignore
-    )
+    model = None
 
     for sae_release, sae_object_or_id in tqdm(
         selected_saes, desc="Running SAE evaluation on all selected SAEs"
@@ -176,6 +172,11 @@ def run_eval(
         sae_results_folder = os.path.join(
             artifacts_folder, sae_release_and_id, "results/metrics"
         )
+
+        if model is None:
+            model = HookedTransformer.from_pretrained_no_processing(
+                config.model_name, device=device, dtype=llm_dtype
+            )
 
         run_eval_single_sae(
             model, sae, config, artifacts_folder, sae_release_and_id, force_rerun

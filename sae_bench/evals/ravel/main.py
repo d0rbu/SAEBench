@@ -472,12 +472,7 @@ def run_eval(
     else:
         model_kwargs = {}
 
-    model = AutoModelForCausalLM.from_pretrained(
-        config.model_name,
-        device_map=device,
-        torch_dtype=llm_dtype,
-        **model_kwargs,
-    )
+    model = None
 
     for sae_release, sae_object_or_id in tqdm(
         selected_saes, desc="Running SAE evaluation on all selected SAEs"
@@ -502,6 +497,14 @@ def run_eval(
         )  # type: ignore
         assert loaded_sae_id == sae_id, f"Loaded SAE ID {loaded_sae_id} does not match expected SAE ID {sae_id}"
         sae = sae.to(device=device, dtype=llm_dtype)
+
+        if model is None:
+            model = AutoModelForCausalLM.from_pretrained(
+                config.model_name,
+                device_map=device,
+                torch_dtype=llm_dtype,
+                **model_kwargs,
+            )
 
         artifacts_folder = os.path.join(
             artifacts_path,

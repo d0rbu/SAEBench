@@ -452,9 +452,7 @@ def run_eval(
 
     print(f"Using dtype: {llm_dtype}")
 
-    model = HookedTransformer.from_pretrained_no_processing(
-        config.model_name, device=device, dtype=llm_dtype
-    )
+    model = None
 
     for sae_release, sae_object_or_id in tqdm(
         selected_saes, desc="Running SAE evaluation on all selected SAEs"
@@ -474,6 +472,11 @@ def run_eval(
         )  # type: ignore
         assert loaded_sae_id == sae_id, f"Loaded SAE ID {loaded_sae_id} does not match expected SAE ID {sae_id}"
         sae = sae.to(device=device, dtype=llm_dtype)
+
+        if model is None:
+            model = HookedTransformer.from_pretrained_no_processing(
+                config.model_name, device=device, dtype=llm_dtype
+            )
 
         eval_output = run_eval_single_sae(
             config=config,

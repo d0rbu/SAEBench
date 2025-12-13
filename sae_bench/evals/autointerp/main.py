@@ -588,9 +588,7 @@ def run_eval(
 
     llm_dtype = general_utils.str_to_dtype(config.llm_dtype)
 
-    model: HookedTransformer = HookedTransformer.from_pretrained_no_processing(
-        config.model_name, device=device, dtype=llm_dtype
-    )
+    model = None
 
     for sae_release, sae_object_or_id in tqdm(
         selected_saes, desc="Running SAE evaluation on all selected SAEs"
@@ -612,6 +610,11 @@ def run_eval(
         sae = sae.to(device=device, dtype=llm_dtype)
 
         artifacts_folder = os.path.join(artifacts_path, EVAL_TYPE_ID_AUTOINTERP)
+
+        if model is None:
+            model = HookedTransformer.from_pretrained_no_processing(
+                config.model_name, device=device, dtype=llm_dtype
+            )
 
         sae_eval_result = run_eval_single_sae(
             config, sae, model, device, artifacts_folder, api_key, sparsity
