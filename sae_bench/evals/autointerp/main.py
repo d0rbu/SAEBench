@@ -234,14 +234,17 @@ class AutoInterp:
         explanation_override: str | None = None,
     ) -> dict[str, Any] | None:
         # Generation phase
-        gen_prompts = self.get_generation_prompts(generation_examples)
+        gen_prompts = self.get_generation_prompts(
+            generation_examples, self.cfg.max_tokens_in_explanation
+        )
         (explanation_raw,), logs = await asyncio.get_event_loop().run_in_executor(
             executor,
             self.get_api_response,
             gen_prompts,
-            self.cfg.max_tokens_in_explanation,
         )
-        explanation = self.parse_explanation(explanation_raw)
+        explanation = self.parse_explanation(
+            explanation_raw, self.cfg.max_tokens_in_explanation
+        )
         results = {
             "latent": latent,
             "explanation": explanation,
@@ -276,8 +279,11 @@ class AutoInterp:
 
         return results
 
-    def parse_explanation(self, explanation: str) -> str:
+    def parse_explanation(self, explanation: str, max_tokens: int) -> str:
         assert len(explanation) > 0, "Explanation is empty"
+        if len(explanation) > max_tokens:
+            print(f"\nExplanation is too long, truncating to {max_tokens} tokens")
+            explanation = explanation[:max_tokens]
 
         return explanation.split("activates on")[-1].rstrip(".").strip()
 
@@ -309,7 +315,7 @@ class AutoInterp:
         ) / len(classifications)
 
     def get_api_response(
-        self, messages: Messages, max_tokens: int, n_completions: int = 1
+        self, messages: Messages, n_completions: int = 1
     ) -> tuple[list[str], str]:
         """Generic API usage function for OpenAI"""
         for message in messages:
@@ -322,7 +328,6 @@ class AutoInterp:
             model="gpt-5-nano",
             messages=messages,  # type: ignore
             n=n_completions,
-            max_completion_tokens=max_tokens,
             stream=False,
         )
         response = [choice.message.content.strip() for choice in result.choices]
@@ -338,7 +343,9 @@ class AutoInterp:
 
         return response, logs
 
-    def get_generation_prompts(self, generation_examples: Examples) -> Messages:
+    def get_generation_prompts(
+        self, generation_examples: Examples, max_tokens: int
+    ) -> Messages:
         assert len(generation_examples) > 0, "No generation examples found"
 
         examples_as_str = "\n".join(
@@ -352,9 +359,11 @@ class AutoInterp:
         if self.cfg.use_demos_in_explanation:
             SYSTEM_PROMPT += """ Some examples: "This neuron activates on the word 'knows' in rhetorical questions", and "This neuron activates on verbs related to decision-making and preferences", and "This neuron activates on the substring 'Ent' at the start of words", and "This neuron activates on text about government economic policy"."""
         else:
-            SYSTEM_PROMPT += (
-                """Your response should be in the form "This neuron activates on..."."""
-            )
+            SYSTEM_PROMPT += """ Your response should be in the form "This neuron activates on..."."""
+        SYSTEM_PROMPT += (
+            f" The explanation should be limited to {max_tokens} tokens or less."
+        )
+
         USER_PROMPT = (
             f"""The activating documents are given below:\n\n{examples_as_str}"""
         )
@@ -608,7 +617,9 @@ def run_eval(
         loaded_sae_id, sae, sparsity = general_utils.load_and_format_sae(
             sae_release, sae_object_or_id, device
         )  # type: ignore
-        assert loaded_sae_id == sae_id, f"Loaded SAE ID {loaded_sae_id} does not match expected SAE ID {sae_id}"
+        assert loaded_sae_id == sae_id, (
+            f"Loaded SAE ID {loaded_sae_id} does not match expected SAE ID {sae_id}"
+        )
         sae = sae.to(device=device, dtype=llm_dtype)
 
         artifacts_folder = os.path.join(artifacts_path, EVAL_TYPE_ID_AUTOINTERP)
