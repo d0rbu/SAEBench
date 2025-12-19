@@ -281,9 +281,11 @@ class AutoInterp:
 
     def parse_explanation(self, explanation: str, max_tokens: int) -> str:
         assert len(explanation) > 0, "Explanation is empty"
-        if len(explanation) > max_tokens:
-            print(f"\nExplanation is too long, truncating to {max_tokens} tokens")
-            explanation = explanation[:max_tokens]
+
+        max_chars = max_tokens * 4
+        if len(explanation) > max_chars:
+            print(f"\nExplanation is too long, truncating to {max_chars} characters")
+            explanation = explanation[:max_chars]
 
         return explanation.split("activates on")[-1].rstrip(".").strip()
 
