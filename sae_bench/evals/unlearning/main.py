@@ -146,19 +146,12 @@ def run_eval(
     random.seed(config.random_seed)
     torch.manual_seed(config.random_seed)
 
-    model = HookedTransformer.from_pretrained_no_processing(
-        config.model_name,
-        device=device,
-        dtype=config.llm_dtype,  # type: ignore
-    )
+    model = None
 
     for sae_release, sae_object_or_id in tqdm(
         selected_saes, desc="Running SAE evaluation on all selected SAEs"
     ):
-        sae_id, sae, sparsity = general_utils.load_and_format_sae(
-            sae_release, sae_object_or_id, device
-        )  # type: ignore
-        sae = sae.to(device=device, dtype=llm_dtype)
+        sae_id = general_utils.get_sae_id(sae_release)
 
         sae_result_path = general_utils.get_results_filepath(
             output_path, sae_release, sae_id
@@ -168,11 +161,22 @@ def run_eval(
             print(f"Skipping {sae_release}_{sae_id} as results already exist")
             continue
 
+        loaded_sae_id, sae, sparsity = general_utils.load_and_format_sae(
+            sae_release, sae_object_or_id, device
+        )  # type: ignore
+        assert loaded_sae_id == sae_id, f"Loaded SAE ID {loaded_sae_id} does not match expected SAE ID {sae_id}"
+        sae = sae.to(device=device, dtype=llm_dtype)
+
         sae_release_and_id = f"{sae_release}_{sae_id}"
 
         sae_results_folder = os.path.join(
             artifacts_folder, sae_release_and_id, "results/metrics"
         )
+
+        if model is None:
+            model = HookedTransformer.from_pretrained_no_processing(
+                config.model_name, device=device, dtype=llm_dtype
+            )
 
         run_eval_single_sae(
             model, sae, config, artifacts_folder, sae_release_and_id, force_rerun

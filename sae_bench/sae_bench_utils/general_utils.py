@@ -129,21 +129,27 @@ def check_decoder_norms(W_dec: torch.Tensor) -> bool:
         )
 
 
+def get_sae_id(sae_release_or_unique_id: Any) -> str:
+    if isinstance(sae_release_or_unique_id, str):
+        return sae_release_or_unique_id
+
+    return "custom_sae"
+
 def load_and_format_sae(
     sae_release_or_unique_id: str, sae_object_or_sae_lens_id: str | SAE, device: str
 ) -> tuple[str, SAE, torch.Tensor | None] | None:
     """Handle both pretrained SAEs (identified by string) and custom SAEs (passed as objects)"""
+    sae_id = get_sae_id(sae_release_or_unique_id)
+
     if isinstance(sae_object_or_sae_lens_id, str):
         sae, _, sparsity = SAE.from_pretrained(
             release=sae_release_or_unique_id,
             sae_id=sae_object_or_sae_lens_id,
             device=device,
         )
-        sae_id = sae_object_or_sae_lens_id
         sae.fold_W_dec_norm()
     else:
         sae = sae_object_or_sae_lens_id
-        sae_id = "custom_sae"
         sparsity = None
         check_decoder_norms(sae.W_dec.data)
 

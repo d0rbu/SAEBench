@@ -327,7 +327,7 @@ def run_eval_single_sae(
     model = model.to(device)  # type: ignore
 
     activations_store = ActivationsStore.from_sae(
-        model, sae, config.sae_batch_size, dataset=dataset_name, device=device
+        model, sae, config.sae_batch_size, dataset=dataset_name, device=device, dataset_trust_remote_code=True
     )
 
     num_features = sae.cfg.d_sae
@@ -452,17 +452,12 @@ def run_eval(
 
     print(f"Using dtype: {llm_dtype}")
 
-    model = HookedTransformer.from_pretrained_no_processing(
-        config.model_name, device=device, dtype=llm_dtype
-    )
+    model = None
 
     for sae_release, sae_object_or_id in tqdm(
         selected_saes, desc="Running SAE evaluation on all selected SAEs"
     ):
-        sae_id, sae, sparsity = general_utils.load_and_format_sae(
-            sae_release, sae_object_or_id, device
-        )  # type: ignore
-        sae = sae.to(device=device, dtype=llm_dtype)
+        sae_id = general_utils.get_sae_id(sae_release)
 
         sae_result_path = general_utils.get_results_filepath(
             output_path, sae_release, sae_id
@@ -471,6 +466,17 @@ def run_eval(
         if os.path.exists(sae_result_path) and not force_rerun:
             print(f"Skipping {sae_release}_{sae_id} as results already exist")
             continue
+
+        loaded_sae_id, sae, sparsity = general_utils.load_and_format_sae(
+            sae_release, sae_object_or_id, device
+        )  # type: ignore
+        assert loaded_sae_id == sae_id, f"Loaded SAE ID {loaded_sae_id} does not match expected SAE ID {sae_id}"
+        sae = sae.to(device=device, dtype=llm_dtype)
+
+        if model is None:
+            model = HookedTransformer.from_pretrained_no_processing(
+                config.model_name, device=device, dtype=llm_dtype
+            )
 
         eval_output = run_eval_single_sae(
             config=config,
