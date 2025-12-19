@@ -261,7 +261,6 @@ class AutoInterp:
                 executor,
                 self.get_api_response,
                 scoring_prompts,
-                self.cfg.max_tokens_in_prediction,
             )
             predictions = self.parse_predictions(predictions_raw)
             if predictions is None:
@@ -282,12 +281,18 @@ class AutoInterp:
     def parse_explanation(self, explanation: str, max_tokens: int) -> str:
         assert len(explanation) > 0, "Explanation is empty"
 
-        max_chars = max_tokens * 4
-        if len(explanation) > max_chars:
-            print(f"\nExplanation is too long, truncating to {max_chars} characters")
-            explanation = explanation[:max_chars]
+        parsed_explanation = explanation.split("activates on")[-1].rstrip(".").strip()
 
-        return explanation.split("activates on")[-1].rstrip(".").strip()
+        assert len(parsed_explanation) > 0, (
+            f"Parsed explanation is empty, explanation: {explanation}"
+        )
+
+        max_chars = max_tokens * 4
+        if len(parsed_explanation) > max_chars:
+            print(f"\nExplanation is too long, truncating to {max_chars} characters")
+            parsed_explanation = parsed_explanation[:max_chars]
+
+        return parsed_explanation
 
     def parse_predictions(self, predictions: str) -> list[int] | None:
         predictions_split = (
