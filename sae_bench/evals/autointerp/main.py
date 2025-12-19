@@ -277,6 +277,8 @@ class AutoInterp:
         return results
 
     def parse_explanation(self, explanation: str) -> str:
+        assert len(explanation) > 0, "Explanation is empty"
+
         return explanation.split("activates on")[-1].rstrip(".").strip()
 
     def parse_predictions(self, predictions: str) -> list[int] | None:

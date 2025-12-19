@@ -107,7 +107,7 @@ class AutoInterpEvalConfig:
         description="Whether to perform the scoring phase, or just return explanation",
     )
     max_tokens_in_explanation: int = Field(
-        default=30,
+        default=300,  # high number to allow for reasoning token
         title="Max Tokens in Explanation",
         description="The maximum number of tokens to allow in an explanation",
     )
