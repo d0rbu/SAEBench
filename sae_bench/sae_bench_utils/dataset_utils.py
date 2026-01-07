@@ -12,7 +12,11 @@ import sae_bench.sae_bench_utils.dataset_info as dataset_info
 
 
 def get_dataset_list_of_strs(
-    dataset_name: str, column_name: str, min_row_chars: int, total_chars: int
+    dataset_name: str,
+    tokenizer: AutoTokenizer,
+    column_name: str,
+    min_row_chars: int,
+    total_chars: int,
 ) -> list[str]:
     dataset = load_dataset(dataset_name, split="train", streaming=True)
 
@@ -20,9 +24,17 @@ def get_dataset_list_of_strs(
     result = []
 
     for row in dataset:
-        if len(row[column_name]) > min_row_chars:  # type: ignore
-            result.append(row[column_name])  # type: ignore
-            total_chars_so_far += len(row[column_name])  # type: ignore
+        text = row.get(column_name)
+        assert text is not None, (
+            f"Column {column_name} not found in dataset {dataset_name}"
+        )
+
+        if not isinstance(text, str):  # conversational format
+            text = tokenizer.apply_chat_template(text, tokenize=False)
+
+        if len(text) > min_row_chars:
+            result.append(text)
+            total_chars_so_far += len(text)
             if total_chars_so_far > total_chars:
                 break
 
@@ -37,7 +49,9 @@ def load_and_tokenize_dataset(
     column_name: str = "text",
     add_bos: bool = True,
 ) -> torch.Tensor:
-    dataset = get_dataset_list_of_strs(dataset_name, column_name, 100, num_tokens * 5)
+    dataset = get_dataset_list_of_strs(
+        dataset_name, tokenizer, column_name, 100, num_tokens * 5
+    )
 
     tokens = tokenize_and_concat_dataset(
         tokenizer, dataset, ctx_len, add_bos=add_bos, max_tokens=num_tokens
