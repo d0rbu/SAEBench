@@ -19,6 +19,7 @@ class BaseSAE(nn.Module, ABC):
         device: torch.device,
         dtype: torch.dtype,
         hook_name: str | None = None,
+        context_length: int | None = None,
     ):
         super().__init__()
 
@@ -43,6 +44,7 @@ class BaseSAE(nn.Module, ABC):
             d_sae=d_sae,
             hook_name=hook_name,
             hook_layer=hook_layer,
+            context_size=context_length,  # type: ignore
         )
 
         self.cfg.metadata = Metadata(
