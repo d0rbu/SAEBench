@@ -24,9 +24,13 @@ class PCASAE(base_sae.BaseSAE):
         device: torch.device,
         dtype: torch.dtype,
         hook_name: str | None = None,
+        context_length: int | None = None,
     ):
         hook_name = hook_name or f"blocks.{hook_layer}.hook_resid_post"
         super().__init__(d_in, d_in, model_name, hook_layer, device, dtype, hook_name)
+
+        self.cfg.context_size = context_length  # type: ignore
+        self.cfg.metadata.context_size = context_length  # type: ignore
 
         # Additional parameter specific to PCA
         self.mean = nn.Parameter(torch.zeros(d_in, device=device, dtype=dtype))
