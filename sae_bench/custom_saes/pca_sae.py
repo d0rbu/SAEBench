@@ -1,4 +1,5 @@
 import gc
+import json
 import math
 import time
 
@@ -102,6 +103,61 @@ class PCASAE(base_sae.BaseSAE):
 
         # Errors can be relatively large in larger SAEs due to floating point precision
         assert torch.allclose(initial_output, new_output, atol=1e-4)
+
+
+def load_dictionary_learning_pca_sae(
+    repo_id: str,
+    filename: str,
+    model_name: str,
+    device: torch.device,
+    dtype: torch.dtype,
+    layer: int | None = None,
+    local_dir: str = "downloaded_saes",
+) -> PCASAE:
+    assert "pca_sae.pt" in filename
+
+    path_to_params = hf_hub_download(
+        repo_id=repo_id,
+        filename=filename,
+        force_download=False,
+        local_dir=local_dir,
+    )
+
+    state_dict = torch.load(path_to_params, map_location=device)
+
+    config_filename = filename.replace("ae.pt", "config.json")
+    path_to_config = hf_hub_download(
+        repo_id=repo_id,
+        filename=config_filename,
+        force_download=False,
+        local_dir=local_dir,
+    )
+
+    with open(path_to_config) as f:
+        config = json.load(f)
+
+    if layer is not None:
+        assert layer == config["trainer"]["layer"]
+    else:
+        layer = config["trainer"]["layer"]
+
+    # Transformer lens often uses a shortened model name
+    assert model_name in config["trainer"]["lm_name"]
+
+    pca = PCASAE(
+        d_in=state_dict["b_dec"].shape[0],
+        model_name=model_name,
+        hook_layer=layer,  # type: ignore
+        device=device,
+        dtype=dtype,
+        hook_name=f"blocks.{layer}.hook_resid_post",
+        context_length=config["trainer"]["dict_size"],
+    )
+
+    pca.load_state_dict(state_dict)
+    pca.to(dtype=dtype, device=device)
+
+    return pca
 
 
 @torch.no_grad()

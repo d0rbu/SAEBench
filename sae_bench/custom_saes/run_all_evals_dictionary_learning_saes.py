@@ -10,6 +10,7 @@ import sae_bench.custom_saes.base_sae as base_sae
 import sae_bench.custom_saes.batch_topk_sae as batch_topk_sae
 import sae_bench.custom_saes.gated_sae as gated_sae
 import sae_bench.custom_saes.jumprelu_sae as jumprelu_sae
+import sae_bench.custom_saes.pca_sae as pca_sae
 import sae_bench.custom_saes.relu_sae as relu_sae
 import sae_bench.custom_saes.topk_sae as topk_sae
 import sae_bench.evals.absorption.main as absorption
@@ -61,6 +62,7 @@ TRAINER_LOADERS = {
     "PAnnealTrainer": relu_sae.load_dictionary_learning_relu_sae,
     "JumpReluTrainer": jumprelu_sae.load_dictionary_learning_jump_relu_sae,
     "GatedSAETrainer": gated_sae.load_dictionary_learning_gated_sae,
+    "PCASAE": pca_sae.load_dictionary_learning_pca_sae,
 }
 
 
