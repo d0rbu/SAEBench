@@ -114,7 +114,7 @@ def load_dictionary_learning_pca_sae(
     layer: int | None = None,
     local_dir: str = "downloaded_saes",
 ) -> PCASAE:
-    assert "pca_sae.pt" in filename
+    assert "ae.pt" in filename
 
     path_to_params = hf_hub_download(
         repo_id=repo_id,
