@@ -128,6 +128,8 @@ def load_dictionary_learning_pca_sae(
     state_dict = {
         "W_enc": raw_state_dict["encoder.weight"],
         "W_dec": raw_state_dict["decoder.weight"],
+        "b_enc": raw_state_dict["encoder.bias"],
+        "b_dec": torch.zeros_like(raw_state_dict["bias"]),
         "mean": raw_state_dict["bias"],
     }
 
