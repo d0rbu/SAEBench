@@ -151,7 +151,7 @@ def load_dictionary_learning_pca_sae(
     assert model_name in config["trainer"]["lm_name"]
 
     pca = PCASAE(
-        d_in=state_dict["b_dec"].shape[0],
+        d_in=state_dict["W_enc"].shape[0],
         model_name=model_name,
         hook_layer=layer,  # type: ignore
         device=device,
