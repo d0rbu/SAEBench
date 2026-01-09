@@ -123,7 +123,13 @@ def load_dictionary_learning_pca_sae(
         local_dir=local_dir,
     )
 
-    state_dict = torch.load(path_to_params, map_location=device)
+    raw_state_dict = torch.load(path_to_params, map_location=device)
+    # convert to the correct format
+    state_dict = {
+        "W_enc": raw_state_dict["encoder.weight"],
+        "W_dec": raw_state_dict["decoder.weight"],
+        "mean": raw_state_dict["bias"],
+    }
 
     config_filename = filename.replace("ae.pt", "config.json")
     path_to_config = hf_hub_download(
